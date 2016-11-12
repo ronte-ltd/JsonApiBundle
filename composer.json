@@ -1,0 +1,14 @@
+{
+    "name": "ronte-ltd/json-api-bundle",
+    "description": "Our bundle to work with api due to jsonapi.org",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandr Zamiatin",
+            "email": "cawa123@mail.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
