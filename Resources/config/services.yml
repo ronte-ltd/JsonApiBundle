@@ -1,0 +1,4 @@
+services:
+#    ronte_ltd_json_api.example:
+#        class: RonteLtd\JsonApiBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
