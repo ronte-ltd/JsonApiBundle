@@ -1,4 +1,8 @@
 services:
-#    ronte_ltd_json_api.example:
-#        class: RonteLtd\JsonApiBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    # Json Api Normalizer
+    ronte_ltd_json_api.normalizer.jsonapi:
+        class: RonteLtd\JsonApiBundle\Serializer\Normalizer\JsonApiNormalizer
+        public: false
+        autowire: true
+        tags:
+            - { name: serializer.normalizer }
