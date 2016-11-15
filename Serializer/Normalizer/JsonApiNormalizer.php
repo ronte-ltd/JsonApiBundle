@@ -12,28 +12,60 @@
 namespace RonteLtd\JsonApiBundle\Serializer\Normalizer;
 
 use Doctrine\Common\Annotations\Reader;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
+use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\scalar;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
 
 /**
  * JsonApiNormalizer
  *
  * @author Alexey Astafev <efsneiron@gmail.com>
  */
-class JsonApiNormalizer implements SerializerAwareInterface, NormalizerInterface
+class JsonApiNormalizer extends AbstractNormalizer
 {
-    use SerializerAwareTrait;
-
     /**
      * @var Reader
      */
     private $reader;
 
-    public function __construct(Reader $reader)
+    /**
+     * @inheritdoc
+     * @param Reader $reader
+     */
+    public function __construct(ClassMetadataFactoryInterface $classMetadataFactory = null, NameConverterInterface $nameConverter = null, Reader $reader)
     {
         $this->reader = $reader;
+        parent::__construct($classMetadataFactory, $nameConverter);
+    }
+
+    /**
+     * Denormalizes data back into an object of the given class.
+     *
+     * @param mixed $data data to restore
+     * @param string $class the expected class to instantiate
+     * @param string $format format the given data was extracted from
+     * @param array $context options available to the denormalizer
+     *
+     * @return object
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        // TODO: Implement denormalize() method.
+    }
+
+    /**
+     * Checks whether the given class is supported for denormalization by this normalizer.
+     *
+     * @param mixed $data Data to denormalize from
+     * @param string $type The class to which the data should be denormalized
+     * @param string $format The format being deserialized from
+     *
+     * @return bool
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        // TODO: Implement supportsDenormalization() method.
     }
 
     /**
@@ -47,22 +79,8 @@ class JsonApiNormalizer implements SerializerAwareInterface, NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $class = new \ReflectionClass($object);
-        $properties = $class->getDefaultProperties();
-        $result = [];
-        
-        foreach (array_keys($properties) as $p) {
-            $method = "get" . ucfirst($p);
-
-            if (method_exists($object, $method)) {
-//                $group = $this->reader->getMethodAnnotation(new \ReflectionMethod($method))
-                $result[$p] = $object->$method();
-            }
-        }
-
-        return [
-            'data' => $result
-        ];
+        $attributes = $this->getAllowedAttributes($object, $context);
+        var_dump($attributes); die();
     }
 
     /**
@@ -84,6 +102,6 @@ class JsonApiNormalizer implements SerializerAwareInterface, NormalizerInterface
             }
         }
 
-        return false;
+        return true;
     }
 }
