@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of JsonApiBundle the package.
+ * This file is part of ApiRestBundle the package.
  *
  * (c) Alexey Astafev <efsneiron@gmail.com>
  *
@@ -12,18 +12,33 @@
 namespace RonteLtd\JsonApiBundle\Annotation;
 
 /**
- * Relationship
+ * JsonApi
  *
  * @author Alexey Astafev <efsneiron@gmail.com>
  * @Annotation
  * @Target("PROPERTY")
  */
-class Relationship
+class Attribute
 {
     /**
      * @var string
      */
     private $name;
+
+    /**
+     * Annotation constructor.
+     *
+     * @param array $values
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $values)
+    {
+        if(!array_key_exists('name', $values )){
+            $this->name = null;
+        }
+//        var_dump($values);
+    }
 
     /**
      * @return string
