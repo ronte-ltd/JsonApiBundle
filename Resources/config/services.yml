@@ -6,3 +6,11 @@ services:
         autowire: true
         tags:
             - { name: serializer.normalizer }
+
+    # Json Api Exception Listener
+    ronte_ltd_json_api.event_listener.json_api_exception:
+        class: RonteLtd\JsonApiBundle\EventListener\JsonApiExceptionListener
+        arguments:
+            - "%kernel.debug%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
