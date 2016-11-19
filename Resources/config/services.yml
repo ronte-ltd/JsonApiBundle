@@ -14,3 +14,9 @@ services:
             - "%kernel.debug%"
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    # Json Api Submit Listener
+    ronte_ltd_json_api.event_listener.json_api_submit:
+        class: RonteLtd\JsonApiBundle\EventListener\JsonApiSubmitListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
