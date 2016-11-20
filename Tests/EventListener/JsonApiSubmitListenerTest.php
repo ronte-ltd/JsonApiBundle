@@ -6,6 +6,7 @@ use RonteLtd\JsonApiBundle\EventListener\JsonApiSubmitListener;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class JsonApiSubmitListenerTest extends WebTestCase
@@ -72,5 +73,39 @@ JSON
         // $form->handleRequest($request);
         //
         // if ($form->isValid()) { ... }
+    }
+
+    public function testInvalidJsonOnKernelRequest()
+    {
+        $request = Request::create(
+            'https://api.example.com/api/v1/fake-path',
+            'POST',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/vnd.api+json',
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+            ],
+            <<<JSON
+123;
+JSON
+        );
+
+        $event = new GetResponseEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
+
+        $listener = new JsonApiSubmitListener();
+
+        try {
+            $listener->onKernelRequest($event);
+
+            $this->fail();
+        } catch (BadRequestHttpException $e) {
+            $this->assertTrue(true);
+        }
     }
 }
