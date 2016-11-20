@@ -108,4 +108,41 @@ JSON
             $this->assertTrue(true);
         }
     }
+
+    public function testNonJsonApiFormatOnKernelRequest()
+    {
+        $request = Request::create(
+            'https://api.example.com/api/v1/fake-path',
+            'POST',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/vnd.api+json',
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+            ],
+            <<<JSON
+{
+    "field1": "value1",
+    "field2": "value2"
+}
+JSON
+        );
+
+        $event = new GetResponseEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
+
+        $listener = new JsonApiSubmitListener();
+
+        try {
+            $listener->onKernelRequest($event);
+
+            $this->fail();
+        } catch (BadRequestHttpException $e) {
+            $this->assertTrue(true);
+        }
+    }
 }
