@@ -17,6 +17,7 @@ class JsonApiSubmitListener
     /**
      * @param GetResponseEvent $event
      * @return void
+     * @throws BadRequestHttpException
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
