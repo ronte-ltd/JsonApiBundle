@@ -111,17 +111,10 @@ class JsonApiExceptionListener
         $errors = [];
 
         do {
-            switch (true) {
-                /** @var HttpExceptionInterface $exception */
-                case $exception instanceof HttpExceptionInterface:
-                    $currentStatusCode = $exception->getStatusCode();
-
-                    break;
-
-                // ...
-
-                default:
-                    $currentStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            if ($exception instanceof HttpExceptionInterface) {
+                $currentStatusCode = $exception->getStatusCode();
+            } else {
+                $currentStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             }
 
             $error = [
