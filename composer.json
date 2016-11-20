@@ -7,6 +7,10 @@
         {
             "name": "Aleksandr Zamiatin",
             "email": "cawa123@mail.ru"
+        },
+        {
+            "name": "Sergey Kodentsov",
+            "email": "soulkoden@gmail.com"
         }
     ],
     "minimum-stability": "dev",
