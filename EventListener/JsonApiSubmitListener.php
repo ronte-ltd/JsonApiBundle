@@ -49,7 +49,7 @@ class JsonApiSubmitListener
             $submittedData['data']['type'] => $submittedData['data']['attributes'],
         ];
 
-        $currentRequest->server->set('Content-Type', 'application/x-www-form-urlencoded');
+        $currentRequest->server->set('CONTENT_TYPE', 'application/x-www-form-urlencoded');
 
         $currentRequest->initialize(
             $currentRequest->query->all(),
