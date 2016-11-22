@@ -7,7 +7,7 @@ services:
         tags:
             - { name: serializer.normalizer }
 
-    # Json Api Exception Listener
+    # Json Api exception listener
     ronte_ltd_json_api.event_listener.json_api_exception:
         class: RonteLtd\JsonApiBundle\EventListener\JsonApiExceptionListener
         arguments:
@@ -15,6 +15,15 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
+    # Json Api view listener
+    ronte_ltd_json_api.event_listener.json_api_view:
+        class: RonteLtd\JsonApiBundle\EventListener\JsonApiViewListener
+        arguments:
+            - "@router"
+        tags:
+            - { name: kernel.event_listener, event: kernel.view }
+
+    # Json Api JsonApiObjectRequest argument resolver
     ronte_ltd_json_api.value_resolver.json_api_object_request:
         class: RonteLtd\JsonApiBundle\ArgumentResolver\JsonApiObjectRequestResolver
         tags:
