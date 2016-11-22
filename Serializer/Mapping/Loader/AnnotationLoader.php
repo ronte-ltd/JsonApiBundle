@@ -11,13 +11,13 @@
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping\Loader;
 
 use Doctrine\Common\Annotations\Reader;
-use RonteLtd\JsonApiBundle\Annotation\Attribute;
-use RonteLtd\JsonApiBundle\Annotation\Relationship;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use RonteLtd\JsonApiBundle\Annotation\Attribute;
+use RonteLtd\JsonApiBundle\Annotation\Relationship;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\AttributeMetadata;
-use Symfony\Component\Serializer\Mapping\ClassMetadataInterface;
-use Symfony\Component\Serializer\Mapping\Loader\LoaderInterface;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassMetadataInterface;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
 
 /**
  * Class AnnotationLoader
@@ -49,6 +49,12 @@ class AnnotationLoader implements LoaderInterface
         $className = $reflectionClass->name;
         $loaded = false;
 
+        foreach ($this->reader->getClassAnnotations($reflectionClass) as $classAnnotation) {
+            if($classAnnotation instanceof ClassAnnotationInterface){
+                $classMetadata->addClassAnnotation($classAnnotation);
+            }
+        }
+
         $attributesMetadata = $classMetadata->getAttributesMetadata();
 
         foreach ($reflectionClass->getProperties() as $property) {
@@ -75,7 +81,7 @@ class AnnotationLoader implements LoaderInterface
                 }
             }
         }
-
+        
         return $loaded;
     }
 }

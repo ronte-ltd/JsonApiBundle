@@ -1,30 +1,24 @@
 <?php
-
 /*
- * This file is part of JsonApiBundle the package.
+ * This file is part of AppBundle the package.
  *
- * (c) Alexey Astafev <efsneiron@gmail.com>
+ * (c) Ruslan Muriev <muriev.r@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace RonteLtd\JsonApiBundle\Annotation;
+namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
-use Doctrine\Common\Annotations\Annotation;
 
 /**
- * Relationship
+ * Class ClassAnnotation
  *
- * @author Alexey Astafev <efsneiron@gmail.com>
- * @Annotation
- * @Annotation\Target("PROPERTY")
+ * @package RonteLtd\JsonApiBundle\Serializer\Mapping
+ * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class Relationship
+class ClassAnnotation implements ClassAnnotationInterface
 {
-    /**
-     * @var string
-     */
     private $name;
 
     /**

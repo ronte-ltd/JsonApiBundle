@@ -1,9 +1,8 @@
 <?php
-
 /*
- * This file is part of ApiRestBundle the package.
+ * This file is part of AppBundle the package.
  *
- * (c) Alexey Astafev <efsneiron@gmail.com>
+ * (c) Ruslan Muriev <muriev.r@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,35 +11,22 @@
 namespace RonteLtd\JsonApiBundle\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
 
 /**
- * JsonApi
+ * Class Normalize
  *
- * @author Alexey Astafev <efsneiron@gmail.com>
+ * @package RonteLtd\JsonApiBundle\Annotation
+ * @author Ruslan Muriev <muriev.r@gmail.com>
  * @Annotation
- * @Annotation\Target("PROPERTY")
+ * @Annotation\Target("CLASS")
  */
-class Attribute
+class Normalize implements ClassAnnotationInterface
 {
     /**
      * @var string
      */
-    private $name;
-
-    /**
-     * Annotation constructor.
-     *
-     * @param array $values
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(array $values)
-    {
-        if(!array_key_exists('name', $values )){
-            $this->name = null;
-        }
-//        var_dump($values);
-    }
+    public $name;
 
     /**
      * @return string

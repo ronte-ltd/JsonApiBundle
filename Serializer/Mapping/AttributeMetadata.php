@@ -22,6 +22,11 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
     /**
      * @var array
      */
+    public $classAnnotations=[];
+
+    /**
+     * @var array
+     */
     public $attribute;
 
     /**
