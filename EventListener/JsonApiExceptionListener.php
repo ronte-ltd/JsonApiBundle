@@ -53,10 +53,7 @@ class JsonApiExceptionListener
         /** @var \Throwable $error */
         $exception = $event->getException();
 
-        if ($exception instanceof JsonApiFormException) {
-            /** @var JsonApiResponse $exceptionResponse */
-            $exceptionResponse = $this->handleFormException($exception);
-        } elseif ($exception instanceof JsonApiValidationException) {
+        if ($exception instanceof JsonApiValidationException) {
             /** @var JsonApiResponse $exceptionResponse */
             $exceptionResponse = $this->handleValidationException($exception);
         } else {
@@ -65,48 +62,6 @@ class JsonApiExceptionListener
         }
 
         $event->setResponse($exceptionResponse);
-    }
-
-    /**
-     * @param JsonApiFormException $exception
-     * @return JsonApiResponse
-     * @deprecated
-     */
-    private function handleFormException(JsonApiFormException $exception)
-    {
-        /** @var FormInterface $form */
-        $form = $exception->getForm();
-
-        /** @var array $errors */
-        $errors = [];
-
-        foreach ($form->getErrors() as $error) {
-            $errors[] = [
-                'source' => [
-                    'pointer' => '',
-                ],
-                'detail' => $error->getMessage(),
-            ];
-        }
-
-        foreach ($form->all() as $child) {
-            if ($child->isValid()) {
-                continue;
-            }
-
-            foreach ($child->getErrors() as $error) {
-                $errors[] = [
-                    'source' => [
-                        'pointer' => '/data/attributes/' . $child->getName(),
-                    ],
-                    'detail' => $error->getMessage(),
-                ];
-            }
-        }
-
-        $response = new JsonApiResponse(['errors' => $errors], $exception->getStatusCode());
-
-        return $response;
     }
 
     /**

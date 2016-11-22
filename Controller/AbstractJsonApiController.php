@@ -11,10 +11,7 @@
 
 namespace RonteLtd\JsonApiBundle\Controller;
 
-use RonteLtd\JsonApiBundle\Http\JsonApiResponse;
-use RonteLtd\JsonApiBundle\Model\JsonApiResourceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * AbstractJsonApiController
@@ -24,23 +21,5 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractJsonApiController extends Controller
 {
-    /**
-     * Returns a JsonApiResponse.
-     *
-     * @param mixed $data
-     * @param int $status
-     * @param array $headers
-     *
-     * @return JsonApiResponse
-     */
-    protected function jsonapi($data, $status = Response::HTTP_OK, $headers = [])
-    {
-        if ((is_object($data) && $data instanceof JsonApiResourceInterface)
-            || (is_array($data) && !empty($data) && $data[0] instanceof JsonApiResourceInterface)
-        ) {
-            // $data = serialize($data)...
-        }
 
-        return new JsonApiResponse($data, $status, $headers, false);
-    }
 }

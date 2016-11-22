@@ -5,7 +5,7 @@ namespace RonteLtd\JsonApiBundle\Model;
 /**
  * @author Sergey Kodentsov <soulkoden@gmail.com>
  */
-abstract class AbstractJsonApiObjectRequest implements JsonApiObjectRequestInterface
+abstract class AbstractJsonApiObjectRequest
 {
     /**
      * @param array $array
