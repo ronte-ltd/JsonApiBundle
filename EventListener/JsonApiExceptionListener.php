@@ -3,12 +3,15 @@
 namespace RonteLtd\JsonApiBundle\EventListener;
 
 use RonteLtd\JsonApiBundle\Exception\Form\JsonApiFormException;
+use RonteLtd\JsonApiBundle\Exception\Validation\JsonApiValidationException;
 use RonteLtd\JsonApiBundle\Http\JsonApiResponse;
 use Symfony\Component\Form\Test\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * JsonApiExceptionListener
@@ -53,6 +56,9 @@ class JsonApiExceptionListener
         if ($exception instanceof JsonApiFormException) {
             /** @var JsonApiResponse $exceptionResponse */
             $exceptionResponse = $this->handleFormException($exception);
+        } elseif ($exception instanceof JsonApiValidationException) {
+            /** @var JsonApiResponse $exceptionResponse */
+            $exceptionResponse = $this->handleValidationException($exception);
         } else {
             /** @var JsonApiResponse $exceptionResponse */
             $exceptionResponse = $this->handleStandardException($exception);
@@ -64,6 +70,7 @@ class JsonApiExceptionListener
     /**
      * @param JsonApiFormException $exception
      * @return JsonApiResponse
+     * @deprecated
      */
     private function handleFormException(JsonApiFormException $exception)
     {
@@ -98,6 +105,33 @@ class JsonApiExceptionListener
         }
 
         $response = new JsonApiResponse(['errors' => $errors], $exception->getStatusCode());
+
+        return $response;
+    }
+
+    /**
+     * @param JsonApiValidationException $exception
+     * @return JsonApiResponse
+     */
+    private function handleValidationException(JsonApiValidationException $exception)
+    {
+        /** @var ConstraintViolationListInterface $validationErrors */
+        $validationErrors = $exception->getErrors();
+
+        /** @var array $errors */
+        $errors = [];
+
+        /** @var ConstraintViolation $validationError */
+        foreach ($validationErrors as $validationError) {
+            $errors[] = [
+                'source' => [
+                    'pointer' => '/data/attributes/' . $validationError->getPropertyPath(),
+                ],
+                'detail' => $validationError->getMessage(),
+            ];
+        }
+
+        $response = new JsonApiResponse(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         return $response;
     }
