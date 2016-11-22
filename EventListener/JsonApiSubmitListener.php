@@ -2,9 +2,13 @@
 
 namespace RonteLtd\JsonApiBundle\EventListener;
 
+use AppBundle\Model\DealRequest;
+use Doctrine\Common\Annotations\Reader;
+use RonteLtd\JsonApiBundle\Annotation\JsonApiObjectRequest;
 use RonteLtd\JsonApiBundle\Http\JsonApiResponse;
+use RonteLtd\JsonApiBundle\Model\JsonApiObjectRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -15,20 +19,27 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class JsonApiSubmitListener
 {
     /**
-     * @param GetResponseEvent $event
-     * @return void
-     * @throws BadRequestHttpException
+     * @var Reader
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    private $reader;
+
+    public function __construct(Reader $reader)
     {
-        if (!$event->isMasterRequest()) {
-            return;
-        }
+        $this->reader = $reader;
+    }
+
+    public function onKernelController(FilterControllerEvent $event)
+    {
+        /** @var callable $controller */
+        $controller = $event->getController();
 
         /** @var Request $currentRequest */
         $currentRequest = $event->getRequest();
 
-        if (0 !== strpos($currentRequest->headers->get('Content-Type'), JsonApiResponse::$CONTENT_TYPE)) {
+        if (!$controller
+            || !$event->isMasterRequest()
+            || 0 !== strpos($currentRequest->headers->get('Content-Type'), JsonApiResponse::$CONTENT_TYPE)
+        ) {
             return;
         }
 
@@ -46,20 +57,33 @@ class JsonApiSubmitListener
             throw new BadRequestHttpException('Is not a valid JSON API data.');
         }
 
-        $postData = [
-            $submittedData['data']['type'] => $submittedData['data']['attributes'],
-        ];
+        $reflectionController = new \ReflectionClass($controller[0]);
+        $reflectionAction = $reflectionController->getMethod($controller[1]);
 
-        $currentRequest->server->set('CONTENT_TYPE', 'application/x-www-form-urlencoded');
-
-        $currentRequest->initialize(
-            $currentRequest->query->all(),
-            $postData,
-            $currentRequest->attributes->all(),
-            $currentRequest->cookies->all(),
-            $currentRequest->files->all(),
-            $currentRequest->server->all(),
-            http_build_query($postData)
+        /** @var JsonApiObjectRequest|null $jsonApiObjectRequest */
+        $jsonApiObjectRequest = $this->reader->getMethodAnnotation(
+            $reflectionAction,
+            JsonApiObjectRequest::class
         );
+
+        if (!$jsonApiObjectRequest) {
+            return;
+        }
+
+        /** @var JsonApiObjectRequestInterface $objectRequestModel */
+        $objectRequestModel = new $jsonApiObjectRequest->class;
+
+        foreach ($submittedData['data']['attributes'] as $key => $value) {
+            $setter = 'set' . ucfirst($key{0}) . substr($key, 1);
+
+            if (method_exists($objectRequestModel, $setter)) {
+                $objectRequestModel->$setter($value);
+            }
+        }
+
+        $reflectionAction->invokeArgs($controller[0], [
+            $objectRequestModel,
+            $currentRequest,
+        ]);
     }
 }
