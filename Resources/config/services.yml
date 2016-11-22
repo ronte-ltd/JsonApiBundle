@@ -18,5 +18,7 @@ services:
     # Json Api Submit Listener
     ronte_ltd_json_api.event_listener.json_api_submit:
         class: RonteLtd\JsonApiBundle\EventListener\JsonApiSubmitListener
+        arguments:
+            - "@annotation_reader"
         tags:
-            - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.controller }
