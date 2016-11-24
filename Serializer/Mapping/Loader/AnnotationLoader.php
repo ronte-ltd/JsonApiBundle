@@ -49,14 +49,19 @@ class AnnotationLoader implements LoaderInterface
         $className = $reflectionClass->name;
         $loaded = false;
 
+        // Load class annotations
         foreach ($this->reader->getClassAnnotations($reflectionClass) as $classAnnotation) {
-            if($classAnnotation instanceof ClassAnnotationInterface){
+            if ($classAnnotation instanceof ClassAnnotationInterface) {
+                if (null === $classAnnotation->getName()) {
+                    $classAnnotation->setName(strtolower($reflectionClass->getShortName()));
+                }
+
                 $classMetadata->addClassAnnotation($classAnnotation);
             }
         }
 
+        // Load class attributes annotations
         $attributesMetadata = $classMetadata->getAttributesMetadata();
-
         foreach ($reflectionClass->getProperties() as $property) {
             if (!isset($attributesMetadata[$property->name])) {
                 $attributesMetadata[$property->name] = new AttributeMetadata($property->name);
@@ -81,7 +86,7 @@ class AnnotationLoader implements LoaderInterface
                 }
             }
         }
-        
+
         return $loaded;
     }
 }

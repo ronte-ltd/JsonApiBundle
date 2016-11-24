@@ -1,7 +1,26 @@
 services:
+    # Custom Annotation Loader
+    ronte_ltd_json_api.mapping.annotation_loader:
+        class: RonteLtd\JsonApiBundle\Serializer\Mapping\Loader\AnnotationLoader
+        arguments: ["@annotations.reader"]
+        public: false
+
+    # Custom Metadata Factory
+    ronte_ltd_json_api.mapping.class_metadata_factory:
+        class: RonteLtd\JsonApiBundle\Serializer\Mapping\Factory\ClassMetadataFactory
+        arguments: ["@ronte_ltd_json_api.mapping.annotation_loader"]
+        public: false
+
+    # Custom Metadata Factory TODO implement cache factory
+#    ronte_ltd_json_api.mapping.cache_class_metadata_factory:
+#        class: Symfony\Component\Serializer\Mapping\Factory\CacheClassMetadataFactory
+#        arguments: ["@ronte_ltd_json_api.mapping.class_metadata_factory"]
+#        public: false
+
     # Json Api Normalizer
     ronte_ltd_json_api.normalizer.jsonapi:
         class: RonteLtd\JsonApiBundle\Serializer\Normalizer\JsonApiNormalizer
+        arguments: ["@ronte_ltd_json_api.mapping.class_metadata_factory"]
         public: false
         autowire: true
         tags:

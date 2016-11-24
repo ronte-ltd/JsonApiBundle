@@ -9,7 +9,8 @@
  */
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
-use Symfony\Component\Serializer\Mapping\AttributeMetadataInterface;
+
+use Symfony\Component\Serializer\Mapping\AttributeMetadataInterface as BaseAttributeMetadataInterface;
 
 /**
  * Class AttributeMetadata
@@ -17,13 +18,8 @@ use Symfony\Component\Serializer\Mapping\AttributeMetadataInterface;
  * @package RonteLtd\Bundle\Serializer\Mapping
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeMetadata
+class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeMetadata implements AttributeMetadataInterface
 {
-    /**
-     * @var array
-     */
-    public $classAnnotations=[];
-
     /**
      * @var array
      */
@@ -69,7 +65,7 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
     /**
      * {@inheritdoc}
      */
-    public function merge(AttributeMetadataInterface $attributeMetadata)
+    public function merge(BaseAttributeMetadataInterface $attributeMetadata)
     {
         foreach ($attributeMetadata->getGroups() as $group) {
             $this->addGroup($group);
@@ -80,7 +76,18 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
             $this->maxDepth = $attributeMetadata->getMaxDepth();
         }
 
-        //Todo implement new interface
+        // Overwrite extented properties
+        if ($attributeMetadata instanceof AttributeMetadataInterface) {
+            // Overwrite only if not defined
+            if (null === $this->attribute) {
+                $this->attribute = $attributeMetadata->getAttribute();
+            }
+
+            // Overwrite only if not defined
+            if (null === $this->relationship) {
+                $this->relationship = $attributeMetadata->getRelationship();
+            }
+        }
     }
 
     /**

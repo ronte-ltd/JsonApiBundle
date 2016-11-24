@@ -10,6 +10,7 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
+use Symfony\Component\Serializer\Mapping\ClassMetadataInterface as BaseClassMetadataInterface;
 
 /**
  * Class ClassMetadata
@@ -19,14 +20,14 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
  */
 class ClassMetadata extends \Symfony\Component\Serializer\Mapping\ClassMetadata implements ClassMetadataInterface
 {
-    private $classAnnotations=[];
+    private $classAnnotations = [];
 
     /**
      * @param ClassAnnotationInterface $classAnnotation
      */
     public function addClassAnnotation(ClassAnnotationInterface $classAnnotation)
     {
-        $this->classAnnotations[$classAnnotation->getName()]=$classAnnotation;
+        $this->classAnnotations[$classAnnotation->getName()] = $classAnnotation;
     }
 
     /**
@@ -35,5 +36,43 @@ class ClassMetadata extends \Symfony\Component\Serializer\Mapping\ClassMetadata 
     public function getClassAnnotations()
     {
         return $this->classAnnotations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function merge(BaseClassMetadataInterface $classMetadata)
+    {
+        foreach ($classMetadata->getAttributesMetadata() as $attributeMetadata) {
+            if (isset($this->attributesMetadata[$attributeMetadata->getName()])) {
+                $this->attributesMetadata[$attributeMetadata->getName()]->merge($attributeMetadata);
+            } else {
+                $this->addAttributeMetadata($attributeMetadata);
+            }
+        }
+
+        if ($classMetadata instanceof ClassMetadataInterface) {
+            foreach ($classMetadata->getClassAnnotations() as $classAnnotation) {
+                if (isset($this->classAnnotations[$classAnnotation->getName()])) {
+                    $this->classAnnotations[$classAnnotation->getName()] = $attributeMetadata;
+                } else {
+                    $this->addClassAnnotation($classAnnotation);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the names of the properties that should be serialized.
+     *
+     * @return string[]
+     */
+    public function __sleep()
+    {
+        return array(
+            'name',
+            'classAnnotations',
+            'attributesMetadata',
+        );
     }
 }

@@ -16,7 +16,7 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
  * @package RonteLtd\Bundle\Serializer\Mapping
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-interface AttributeMetadataInterface extends \Symfony\Component\Serializer\Mapping\AttributeMetadataInterface
+interface AttributeMetadataInterface
 {
     /**
      * Get  attribute annotation

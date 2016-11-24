@@ -19,5 +19,13 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
  */
 interface ClassAnnotationInterface
 {
+    /**
+     * @return string
+     */
     public function getName();
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name);
 }

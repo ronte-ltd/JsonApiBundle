@@ -11,6 +11,7 @@
 namespace RonteLtd\JsonApiBundle\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotation;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
 
 /**
@@ -21,26 +22,6 @@ use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
  * @Annotation
  * @Annotation\Target("CLASS")
  */
-class Normalize implements ClassAnnotationInterface
+class Normalize extends ClassAnnotation
 {
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
 }

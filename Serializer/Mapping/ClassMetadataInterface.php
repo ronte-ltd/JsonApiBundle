@@ -10,14 +10,13 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
-
 /**
  * Interface ClassMetadataInterface
  *
  * @package RonteLtd\JsonApiBundle\Serializer\Mapping
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-interface ClassMetadataInterface extends \Symfony\Component\Serializer\Mapping\ClassMetadataInterface
+interface ClassMetadataInterface
 {
     /**
      * @param ClassAnnotationInterface $classAnnotation

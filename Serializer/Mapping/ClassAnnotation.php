@@ -19,7 +19,10 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
  */
 class ClassAnnotation implements ClassAnnotationInterface
 {
-    private $name;
+    /**
+     * @var string
+     */
+    public $name;
 
     /**
      * @return string
