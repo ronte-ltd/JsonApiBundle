@@ -11,97 +11,63 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Normalizer;
 
-use Doctrine\Common\Annotations\Reader;
+use RonteLtd\JsonApiBundle\Annotation\Attribute;
+use RonteLtd\JsonApiBundle\Annotation\Normalize;
+use RonteLtd\JsonApiBundle\Annotation\Relationship;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\AttributeMetadata;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassMetadataInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
+use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\scalar;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
- * JsonApiNormalizer
+ * Class JsonApiNormalizer
  *
- * @author Alexey Astafev <efsneiron@gmail.com>
+ * @package RonteLtd\JsonApiBundle\Serializer\Normalizer
+ * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class JsonApiNormalizer extends AbstractNormalizer
+class JsonApiNormalizer extends ObjectNormalizer
 {
     /**
-     * @var Reader
+     * JsonApiNormalizer constructor.
+     * @param ClassMetadataFactoryInterface|null $classMetadataFactory
+     * @param NameConverterInterface|null $nameConverter
+     * @param PropertyAccessorInterface|null $propertyAccessor
+     * @param PropertyTypeExtractorInterface|null $propertyTypeExtractor
      */
-    private $reader;
-
-    /**
-     * @inheritdoc
-     * @param Reader $reader
-     */
-    public function __construct(ClassMetadataFactoryInterface $classMetadataFactory = null, NameConverterInterface $nameConverter = null, Reader $reader)
+    public function __construct(ClassMetadataFactoryInterface $classMetadataFactory = null, NameConverterInterface $nameConverter = null, PropertyAccessorInterface $propertyAccessor = null, PropertyTypeExtractorInterface $propertyTypeExtractor = null)
     {
-        $this->reader = $reader;
-        parent::__construct($classMetadataFactory, $nameConverter);
+        parent::__construct($classMetadataFactory, $nameConverter, $propertyAccessor, $propertyTypeExtractor);
     }
 
     /**
-     * Denormalizes data back into an object of the given class.
-     *
-     * @param mixed $data data to restore
-     * @param string $class the expected class to instantiate
-     * @param string $format format the given data was extracted from
-     * @param array $context options available to the denormalizer
-     *
-     * @return object
-     */
-    public function denormalize($data, $class, $format = null, array $context = array())
-    {
-        // TODO: Implement denormalize() method.
-    }
-
-    /**
-     * Checks whether the given class is supported for denormalization by this normalizer.
-     *
-     * @param mixed $data Data to denormalize from
-     * @param string $type The class to which the data should be denormalized
-     * @param string $format The format being deserialized from
-     *
-     * @return bool
-     */
-    public function supportsDenormalization($data, $type, $format = null)
-    {
-        // TODO: Implement supportsDenormalization() method.
-    }
-
-    /**
-     * Normalizes an object into a set of arrays/scalars.
-     *
-     * @param object $object object to normalize
-     * @param string $format format the normalization result will be encoded as
-     * @param array $context Context options for the normalizer
-     *
-     * @return array|scalar
-     */
-    public function normalize($object, $format = null, array $context = array())
-    {
-        $attributes = $this->getAllowedAttributes($object, $context);
-        var_dump($attributes); die();
-    }
-
-    /**
-     * Checks whether the given class is supported for normalization by this normalizer.
-     *
-     * @param mixed $data Data to normalize
-     * @param string $format The format being (de-)serialized from or into
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function supportsNormalization($data, $format = null)
     {
-        if (is_object($data)) {
-            $classAnnotation = $this->reader->getClassAnnotation(
-                new \ReflectionClass($data), 'RonteLtd\JsonApiBundle\Annotation\JsonApi');
+        if (!(is_object($data) && !$data instanceof \Traversable)) {
+            return false;
+        }
 
-            if ($classAnnotation) {
+        $metadata = $this->classMetadataFactory->getMetadataFor($data);
+
+        if (!$metadata instanceof ClassMetadataInterface) {
+            return false;
+        }
+
+        if (empty($metadata->getClassAnnotations())) {
+            return false;
+        }
+
+        foreach ($metadata->getClassAnnotations() as $annotation) {
+            if ($annotation instanceof Normalize) {
                 return true;
             }
         }
 
-        return true;
+        return false;
     }
 }
