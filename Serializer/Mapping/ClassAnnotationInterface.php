@@ -10,7 +10,6 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
-
 /**
  * Interface ClassAnnotationInterface
  *

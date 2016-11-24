@@ -25,22 +25,7 @@ class Attribute
     /**
      * @var string
      */
-    private $name;
-
-    /**
-     * Annotation constructor.
-     *
-     * @param array $values
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(array $values)
-    {
-        if(!array_key_exists('name', $values )){
-            $this->name = null;
-        }
-//        var_dump($values);
-    }
+    public $name;
 
     /**
      * @return string

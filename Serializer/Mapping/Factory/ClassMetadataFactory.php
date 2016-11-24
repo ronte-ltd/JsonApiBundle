@@ -15,7 +15,6 @@ use RonteLtd\JsonApiBundle\Serializer\Mapping\Loader\LoaderInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 
-
 /**
  * Class ClassMetadataFactory
  *

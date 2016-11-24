@@ -25,7 +25,7 @@ class Relationship
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * @return string
