@@ -76,7 +76,7 @@ class ObjectNormalizer extends BaseObjectNormalizer
     public function normalize($object, $format = null, array $context = array())
     {
         $this->setCircularReferenceHandler(function ($object) {
-            return (string)$object;
+            return [];
         });
 
         $data = parent::normalize($object, $format, $context);
