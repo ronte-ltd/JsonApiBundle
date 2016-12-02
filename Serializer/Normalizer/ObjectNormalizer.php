@@ -90,16 +90,11 @@ class ObjectNormalizer extends BaseObjectNormalizer
         $attributesMetadata = $classMetadata->getAttributesMetadata();
         $classAnnotation = $this->getNormalizerClassAnnotation($classMetadata);
 
-        // Create basic jsonApi
-        $jsonApiData = [
-            'links' => [],
-            'meta' => [],
-            'data' => [
-                'type' => $classAnnotation->getName(),
-                'id' => $object->getId(),
-                'attributes' => []
-            ],
-            'included' => []
+        $jsonApi = [
+            'type' => $classAnnotation->getName(),
+            'id' => $object->getId(),
+            'attributes' => [],
+            'relationships' => []
         ];
 
         foreach ($data as $atrName => $atrVal) {
@@ -109,7 +104,7 @@ class ObjectNormalizer extends BaseObjectNormalizer
             }
 
             $attributeMetadata = $attributesMetadata[$attrMetadataName];
-            if(!$attributeMetadata instanceof AttributeMetadataInterface){
+            if (!$attributeMetadata instanceof AttributeMetadataInterface) {
                 continue;
             }
 
@@ -119,17 +114,17 @@ class ObjectNormalizer extends BaseObjectNormalizer
             if ($attribute instanceof Attribute) {
                 $name = $attribute->getName() ?: strtolower($atrName);
 
-                $jsonApiData['data']['attributes'][$name] = $atrVal;
+                $jsonApi['attributes'][$name] = $atrVal;
             }
 
             if ($relationship instanceof Relationship) {
                 $name = $relationship->getName() ?: strtolower($atrName);
 
-                $jsonApiData['data']['relationships'][$name] = $atrVal;
+                $jsonApi['relationships'][$name]["data"] = $atrVal;
             }
         }
 
-        return $jsonApiData;
+        return $jsonApi;
     }
 
     /**
