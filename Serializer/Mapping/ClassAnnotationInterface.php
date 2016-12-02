@@ -27,4 +27,14 @@ interface ClassAnnotationInterface
      * @param string $name
      */
     public function setName(string $name);
+
+    /**
+     * @return array
+     */
+    public function getMeta();
+
+    /**
+     * @param array $meta
+     */
+    public function setMeta($meta);
 }

@@ -29,6 +29,11 @@ class ObjectNormalizer implements ClassAnnotationInterface
     public $name;
 
     /**
+     * @var array
+     */
+    public $meta;
+
+    /**
      * @return string
      */
     public function getName()
@@ -42,5 +47,21 @@ class ObjectNormalizer implements ClassAnnotationInterface
     public function setName(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta;
+    }
+
+    /**
+     * @param array $meta
+     */
+    public function setMeta($meta)
+    {
+        $this->meta = $meta;
     }
 }
