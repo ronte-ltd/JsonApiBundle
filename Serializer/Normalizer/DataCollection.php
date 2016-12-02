@@ -23,10 +23,14 @@ class DataCollection extends ArrayCollection
     /**
      * Initializes a new ArrayCollection.
      *
-     * @param array $elements
+     * @param $elements
      */
-    public function __construct(array $elements = array())
+    public function __construct($elements = array())
     {
+        if (!is_array($elements)) {
+            $elements = [$elements];
+        }
+
         parent::__construct($elements);
     }
 }
