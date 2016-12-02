@@ -13,6 +13,7 @@ namespace RonteLtd\JsonApiBundle\Serializer\Normalizer;
 use RonteLtd\JsonApiBundle\Annotation\Attribute;
 use RonteLtd\JsonApiBundle\Annotation\Relationship;
 use RonteLtd\JsonApiBundle\Annotation\ObjectNormalizer as ObjectNormalizerAnnotation;
+use RonteLtd\JsonApiBundle\Serializer\Exception\LogicException;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\AttributeMetadata;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\AttributeMetadataInterface;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
@@ -125,6 +126,22 @@ class ObjectNormalizer extends BaseObjectNormalizer
         }
 
         return $jsonApi;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null)
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        throw new LogicException(sprintf('Cannot denormalize with "%s".', \JsonSerializable::class));
     }
 
     /**
