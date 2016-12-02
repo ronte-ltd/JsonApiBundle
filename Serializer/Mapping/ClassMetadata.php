@@ -10,16 +10,71 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
-use Symfony\Component\Serializer\Mapping\ClassMetadataInterface as BaseClassMetadataInterface;
-
 /**
  * Class ClassMetadata
  *
  * @package RonteLtd\JsonApiBundle\Serializer\Mapping
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class ClassMetadata extends \Symfony\Component\Serializer\Mapping\ClassMetadata implements ClassMetadataInterface
+class ClassMetadata implements ClassMetadataInterface
 {
+    /**
+     * @var string
+     *
+     * @internal This property is public in order to reduce the size of the
+     *           class' serialized representation. Do not access it. Use
+     *           {@link getName()} instead.
+     */
+    public $name;
+
+    /**
+     * @var AttributeMetadataInterface[]
+     *
+     * @internal This property is public in order to reduce the size of the
+     *           class' serialized representation. Do not access it. Use
+     *           {@link getAttributesMetadata()} instead.
+     */
+    public $attributesMetadata = array();
+
+    /**
+     * @var \ReflectionClass
+     */
+    private $reflClass;
+
+    /**
+     * Constructs a metadata for the given class.
+     *
+     * @param string $class
+     */
+    public function __construct($class)
+    {
+        $this->name = $class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata)
+    {
+        $this->attributesMetadata[$attributeMetadata->getName()] = $attributeMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributesMetadata()
+    {
+        return $this->attributesMetadata;
+    }
+
     private $classAnnotations = [];
 
     /**
@@ -27,7 +82,9 @@ class ClassMetadata extends \Symfony\Component\Serializer\Mapping\ClassMetadata 
      */
     public function addClassAnnotation(ClassAnnotationInterface $classAnnotation)
     {
-        $this->classAnnotations[$classAnnotation->getName()] = $classAnnotation;
+        $annotationClass = new \ReflectionClass($classAnnotation);
+
+        $this->classAnnotations[$annotationClass->getShortName()] = $classAnnotation;
     }
 
     /**
@@ -41,25 +98,27 @@ class ClassMetadata extends \Symfony\Component\Serializer\Mapping\ClassMetadata 
     /**
      * {@inheritdoc}
      */
-    public function merge(BaseClassMetadataInterface $classMetadata)
+    public function merge(ClassMetadataInterface $classMetadata)
     {
-        foreach ($classMetadata->getAttributesMetadata() as $attributeMetadata) {
-            if (isset($this->attributesMetadata[$attributeMetadata->getName()])) {
-                $this->attributesMetadata[$attributeMetadata->getName()]->merge($attributeMetadata);
+        foreach ($classMetadata->getClassAnnotations() as $classAnnotation) {
+            if (isset($this->classAnnotations[$classAnnotation->getName()])) {
+                $this->classAnnotations[$classAnnotation->getName()] = $classAnnotation;
             } else {
-                $this->addAttributeMetadata($attributeMetadata);
+                $this->addClassAnnotation($classAnnotation);
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReflectionClass()
+    {
+        if (!$this->reflClass) {
+            $this->reflClass = new \ReflectionClass($this->getName());
         }
 
-        if ($classMetadata instanceof ClassMetadataInterface) {
-            foreach ($classMetadata->getClassAnnotations() as $classAnnotation) {
-                if (isset($this->classAnnotations[$classAnnotation->getName()])) {
-                    $this->classAnnotations[$classAnnotation->getName()] = $attributeMetadata;
-                } else {
-                    $this->addClassAnnotation($classAnnotation);
-                }
-            }
-        }
+        return $this->reflClass;
     }
 
     /**

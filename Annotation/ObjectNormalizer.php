@@ -8,15 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
+namespace RonteLtd\JsonApiBundle\Annotation;
+
+use Doctrine\Common\Annotations\Annotation;
+use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassAnnotationInterface;
 
 /**
- * Class ClassAnnotation
+ * Class Normalize
  *
- * @package RonteLtd\JsonApiBundle\Serializer\Mapping
+ * @package RonteLtd\JsonApiBundle\Annotation
  * @author Ruslan Muriev <muriev.r@gmail.com>
+ * @Annotation
+ * @Annotation\Target("CLASS")
  */
-class ClassAnnotation implements ClassAnnotationInterface
+class ObjectNormalizer implements ClassAnnotationInterface
 {
     /**
      * @var string

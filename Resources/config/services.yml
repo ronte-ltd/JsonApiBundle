@@ -6,8 +6,8 @@ services:
         public: false
 
     # Custom Metadata Factory
-    ronte_ltd_json_api.mapping.class_metadata_factory:
-        class: RonteLtd\JsonApiBundle\Serializer\Mapping\Factory\ClassMetadataFactory
+    ronte_ltd_json_api.mapping.metadata_factory:
+        class: RonteLtd\JsonApiBundle\Serializer\Mapping\Factory\MetadataFactory
         arguments: ["@ronte_ltd_json_api.mapping.annotation_loader"]
         public: false
 
@@ -19,9 +19,12 @@ services:
 
     # Json Api Normalizer
     ronte_ltd_json_api.normalizer.jsonapi:
-        class: RonteLtd\JsonApiBundle\Serializer\Normalizer\JsonApiNormalizer
-        arguments: ["@ronte_ltd_json_api.mapping.class_metadata_factory"]
+        class: RonteLtd\JsonApiBundle\Serializer\Normalizer\ObjectNormalizer
+        arguments:
+            - "@ronte_ltd_json_api.mapping.metadata_factory"
+            - "@serializer.mapping.class_metadata_factory"
+            - "@serializer.name_converter.camel_case_to_snake_case"
         public: false
         autowire: true
         tags:
-            - { name: serializer.normalizer }
+            - { name: "serializer.normalizer", priority: 1 }

@@ -10,16 +10,23 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
-use Symfony\Component\Serializer\Mapping\AttributeMetadataInterface as BaseAttributeMetadataInterface;
-
 /**
  * Class AttributeMetadata
  *
  * @package RonteLtd\Bundle\Serializer\Mapping
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeMetadata implements AttributeMetadataInterface
+class AttributeMetadata implements AttributeMetadataInterface
 {
+    /**
+     * @var string
+     *
+     * @internal This property is public in order to reduce the size of the
+     *           class' serialized representation. Do not access it. Use
+     *           {@link getName()} instead.
+     */
+    public $name;
+
     /**
      * @var array
      */
@@ -29,6 +36,24 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
      * @var array
      */
     public $relationship;
+
+    /**
+     * Constructs a metadata for the given attribute.
+     *
+     * @param string $name
+     */
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * @return array
@@ -65,28 +90,16 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
     /**
      * {@inheritdoc}
      */
-    public function merge(BaseAttributeMetadataInterface $attributeMetadata)
+    public function merge(AttributeMetadataInterface $attributeMetadata)
     {
-        foreach ($attributeMetadata->getGroups() as $group) {
-            $this->addGroup($group);
+        // Overwrite only if not defined
+        if (null === $this->attribute) {
+            $this->attribute = $attributeMetadata->getAttribute();
         }
 
         // Overwrite only if not defined
-        if (null === $this->maxDepth) {
-            $this->maxDepth = $attributeMetadata->getMaxDepth();
-        }
-
-        // Overwrite extented properties
-        if ($attributeMetadata instanceof AttributeMetadataInterface) {
-            // Overwrite only if not defined
-            if (null === $this->attribute) {
-                $this->attribute = $attributeMetadata->getAttribute();
-            }
-
-            // Overwrite only if not defined
-            if (null === $this->relationship) {
-                $this->relationship = $attributeMetadata->getRelationship();
-            }
+        if (null === $this->relationship) {
+            $this->relationship = $attributeMetadata->getRelationship();
         }
     }
 
@@ -97,7 +110,6 @@ class AttributeMetadata extends \Symfony\Component\Serializer\Mapping\AttributeM
      */
     public function __sleep()
     {
-        return array('name', 'groups', 'maxDepth', 'attribute', 'relationship');
+        return array('name', 'attribute', 'relationship');
     }
-
 }

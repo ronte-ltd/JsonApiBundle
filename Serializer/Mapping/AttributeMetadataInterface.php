@@ -19,6 +19,13 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 interface AttributeMetadataInterface
 {
     /**
+     * Gets the attribute name.
+     *
+     * @return string
+     */
+    public function getName();
+    
+    /**
      * Get  attribute annotation
      *
      * @return array
@@ -28,9 +35,9 @@ interface AttributeMetadataInterface
     /**
      * Set  attribute annotation
      *
-     * @param array $jsonApiAttribute
+     * @param array $attribute
      */
-    public function setAttribute($jsonApiAttribute);
+    public function setAttribute($attribute);
 
     /**
      * Get  relationship annotation
@@ -42,7 +49,14 @@ interface AttributeMetadataInterface
     /**
      * Set  relationship annotation
      *
-     * @param array $jsonApiRelationship
+     * @param array $relationship
      */
-    public function setRelationship($jsonApiRelationship);
+    public function setRelationship($relationship);
+
+    /**
+     * Merges an {@see AttributeMetadataInterface} with in the current one.
+     *
+     * @param AttributeMetadataInterface $attributeMetadata
+     */
+    public function merge(AttributeMetadataInterface $attributeMetadata);
 }

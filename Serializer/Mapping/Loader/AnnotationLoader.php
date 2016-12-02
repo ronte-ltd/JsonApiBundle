@@ -11,8 +11,6 @@
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping\Loader;
 
 use Doctrine\Common\Annotations\Reader;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use RonteLtd\JsonApiBundle\Annotation\Attribute;
 use RonteLtd\JsonApiBundle\Annotation\Relationship;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\AttributeMetadata;
@@ -53,7 +51,7 @@ class AnnotationLoader implements LoaderInterface
         foreach ($this->reader->getClassAnnotations($reflectionClass) as $classAnnotation) {
             if ($classAnnotation instanceof ClassAnnotationInterface) {
                 if (null === $classAnnotation->getName()) {
-                    $classAnnotation->setName(strtolower($reflectionClass->getShortName()));
+                    $classAnnotation->setName($reflectionClass->getShortName());
                 }
 
                 $classMetadata->addClassAnnotation($classAnnotation);
@@ -74,12 +72,6 @@ class AnnotationLoader implements LoaderInterface
                         $attributesMetadata[$property->name]->setAttribute($annotation);
                     } elseif ($annotation instanceof Relationship) {
                         $attributesMetadata[$property->name]->setRelationship($annotation);
-                    } elseif ($annotation instanceof Groups) {
-                        foreach ($annotation->getGroups() as $group) {
-                            $attributesMetadata[$property->name]->addGroup($group);
-                        }
-                    } elseif ($annotation instanceof MaxDepth) {
-                        $attributesMetadata[$property->name]->setMaxDepth($annotation->getMaxDepth());
                     }
 
                     $loaded = true;

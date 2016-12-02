@@ -19,6 +19,13 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 interface ClassMetadataInterface
 {
     /**
+     * Returns the name of the backing PHP class.
+     *
+     * @return string The name of the backing class
+     */
+    public function getName();
+
+    /**
      * @param ClassAnnotationInterface $classAnnotation
      */
     public function addClassAnnotation(ClassAnnotationInterface $classAnnotation);
@@ -27,4 +34,32 @@ interface ClassMetadataInterface
      * @return array
      */
     public function getClassAnnotations();
+
+    /**
+     * Adds an {@link AttributeMetadataInterface}.
+     *
+     * @param AttributeMetadataInterface $attributeMetadata
+     */
+    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata);
+
+    /**
+     * Gets the list of {@link AttributeMetadataInterface}.
+     *
+     * @return AttributeMetadataInterface[]
+     */
+    public function getAttributesMetadata();
+
+    /**
+     * Merges a {@link ClassMetadataInterface} in the current one.
+     *
+     * @param ClassMetadataInterface $classMetadata
+     */
+    public function merge(ClassMetadataInterface $classMetadata);
+
+    /**
+     * Returns a {@link \ReflectionClass} instance for this class.
+     *
+     * @return \ReflectionClass
+     */
+    public function getReflectionClass();
 }

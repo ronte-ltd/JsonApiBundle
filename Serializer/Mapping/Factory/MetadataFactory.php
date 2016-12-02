@@ -12,16 +12,15 @@ namespace RonteLtd\JsonApiBundle\Serializer\Mapping\Factory;
 
 use RonteLtd\JsonApiBundle\Serializer\Mapping\ClassMetadata;
 use RonteLtd\JsonApiBundle\Serializer\Mapping\Loader\LoaderInterface;
-use Symfony\Component\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
+use RonteLtd\JsonApiBundle\Serializer\Exception\InvalidArgumentException;
 
 /**
- * Class ClassMetadataFactory
+ * Class MetadataFactory
  *
  * @package RonteLtd\JsonApiBundle\Serializer\Mapping\Factory
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class ClassMetadataFactory implements ClassMetadataFactoryInterface
+class MetadataFactory implements MetadataFactoryInterface
 {
     /**
      * @var LoaderInterface
