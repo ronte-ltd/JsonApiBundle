@@ -18,8 +18,20 @@ services:
 #        public: false
 
     # Json Api Normalizer
-    ronte_ltd_json_api.normalizer.jsonapi:
+    ronte_ltd_json_api.normalizer.object_normalizer:
         class: RonteLtd\JsonApiBundle\Serializer\Normalizer\ObjectNormalizer
+        arguments:
+            - "@ronte_ltd_json_api.mapping.metadata_factory"
+            - "@serializer.mapping.class_metadata_factory"
+            - "@serializer.name_converter.camel_case_to_snake_case"
+        public: false
+        autowire: true
+        tags:
+            - { name: "serializer.normalizer", priority: 2 }
+
+    # Json Api Normalizer
+    ronte_ltd_json_api.normalizer.data_collection_normalizer:
+        class: RonteLtd\JsonApiBundle\Serializer\Normalizer\DataCollectionNormalizer
         arguments:
             - "@ronte_ltd_json_api.mapping.metadata_factory"
             - "@serializer.mapping.class_metadata_factory"
