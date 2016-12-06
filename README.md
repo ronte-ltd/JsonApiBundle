@@ -106,7 +106,7 @@ class TestController extends AbstractRestController
     }
 ```
 
-### Normolizer
+### Normalizer
 
 ```php
 use RonteLtd\JsonApiBundle\Serializer\Normalizer\Collection;
@@ -115,7 +115,7 @@ $data = []; //Some objects collection or object
 
 $collection = new Collection($data);
 
-//Optional
+//Optional http://jsonapi.org/format/#document-top-level
 $collection->setJsonapi(['version' => '1.0']);
 $collection->setMeta(['authors' => ['Ruslan', 'Alexey']]); //Some metadata
 $collection->setLinks(['self' => 'http://mydomain.com/api/v1/']); //JsonApi links
@@ -137,7 +137,7 @@ $data = []; //Some objects collection or object
 
 $collection = new Collection($data);
 
-//Optional
+//Optional http://jsonapi.org/format/#document-top-level
 $collection->setJsonapi(['version' => '1.0']);
 $collection->setMeta(['authors' => ['Ruslan', 'Alexey']]); //Some metadata
 $collection->setLinks(['self' => 'http://mydomain.com/api/v1/']); //JsonApi links
