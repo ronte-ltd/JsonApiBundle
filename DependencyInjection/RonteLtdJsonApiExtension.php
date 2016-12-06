@@ -22,7 +22,12 @@ class RonteLtdJsonApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $container->setParameter(
+            'ronte_ltd_json_api.jsonapi',
+            (array_key_exists('jsonapi', $config) ? $config['jsonapi'] : null)
+        );
+
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
 }

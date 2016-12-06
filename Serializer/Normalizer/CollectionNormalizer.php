@@ -18,12 +18,12 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Class DataCollectionNormalizer
+ * Class CollectionNormalizer
  *
  * @package RonteLtd\JsonApiBundle\Serializer\Normalizer
  * @author Ruslan Muriev <muriev.r@gmail.com>
  */
-class DataCollectionNormalizer extends AbstractNormalizer
+class CollectionNormalizer extends AbstractNormalizer
 {
     /**
      * ObjectNormalizer constructor.
@@ -44,22 +44,33 @@ class DataCollectionNormalizer extends AbstractNormalizer
      */
     public function supportsNormalization($data, $format = null)
     {
-        return ($data instanceof DataCollection);
+        return ($data instanceof Collection);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($collection, $format = null, array $context = array())
     {
-        $jsonApiData = [
-            'links' => [],
-            'meta' => [],
-            'data' => [],
-            'included' => []
-        ];
+        if (!$collection instanceof Collection) {
+            return $collection;
+        }
 
-        foreach ($object as $item) {
+        if (!empty($collection->getJsonapi())) {
+            $jsonApiData['jsonapi'] = $collection->getJsonapi();
+        }
+
+        if (!empty($collection->getLinks())) {
+            $jsonApiData['links'] = $collection->getLinks();
+        }
+
+        if (!empty($collection->getMeta())) {
+            $jsonApiData['meta'] = $collection->getMeta();
+        }
+
+//        $jsonApiData['included'] = []; TODO implement
+
+        foreach ($collection as $item) {
             if ($this->serializer instanceof NormalizerInterface) {
                 $jsonApiData['data'][] = $this->serializer->normalize($item);
             }
