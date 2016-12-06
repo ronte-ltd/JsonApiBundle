@@ -145,12 +145,3 @@ $collection->setLinks(['self' => 'http://mydomain.com/api/v1/']); //JsonApi link
 $jsonApi = $this->get('serializer')->serialize($collection, 'json');
 ```
 
-## Road map
-
-- [ ] Routing
-- [ ] Annotations
-- [ ] Abstract controllers
-- [ ] jsonapi transformers
-- [ ] Resource controllers
-- [ ] Docs
-
