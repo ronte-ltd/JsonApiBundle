@@ -100,6 +100,14 @@ class ClassMetadata implements ClassMetadataInterface
      */
     public function merge(ClassMetadataInterface $classMetadata)
     {
+        foreach ($classMetadata->getAttributesMetadata() as $attributeMetadata) {
+            if (isset($this->attributesMetadata[$attributeMetadata->getName()])) {
+                $this->attributesMetadata[$attributeMetadata->getName()] = $attributeMetadata;
+            } else {
+                $this->addAttributeMetadata($attributeMetadata);
+            }
+        }
+
         foreach ($classMetadata->getClassAnnotations() as $classAnnotation) {
             if (isset($this->classAnnotations[$classAnnotation->getName()])) {
                 $this->classAnnotations[$classAnnotation->getName()] = $classAnnotation;

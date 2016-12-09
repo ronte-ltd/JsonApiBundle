@@ -10,6 +10,9 @@
 
 namespace RonteLtd\JsonApiBundle\Serializer\Mapping;
 
+use RonteLtd\JsonApiBundle\Annotation\Attribute;
+use RonteLtd\JsonApiBundle\Annotation\Relationship;
+
 /**
  * Class AttributeMetadata
  *
@@ -28,12 +31,12 @@ class AttributeMetadata implements AttributeMetadataInterface
     public $name;
 
     /**
-     * @var array
+     * @var Attribute
      */
     public $attribute;
 
     /**
-     * @var array
+     * @var Relationship
      */
     public $relationship;
 
@@ -56,7 +59,7 @@ class AttributeMetadata implements AttributeMetadataInterface
     }
 
     /**
-     * @return array
+     * @return Attribute
      */
     public function getAttribute()
     {
@@ -64,7 +67,7 @@ class AttributeMetadata implements AttributeMetadataInterface
     }
 
     /**
-     * @param array $attribute
+     * @param Attribute $attribute
      */
     public function setAttribute($attribute)
     {
@@ -72,7 +75,7 @@ class AttributeMetadata implements AttributeMetadataInterface
     }
 
     /**
-     * @return array
+     * @return Relationship
      */
     public function getRelationship()
     {
@@ -80,7 +83,7 @@ class AttributeMetadata implements AttributeMetadataInterface
     }
 
     /**
-     * @param array $relationship
+     * @param Relationship $relationship
      */
     public function setRelationship($relationship)
     {
